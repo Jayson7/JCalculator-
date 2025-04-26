@@ -14,13 +14,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.objecthunter.exp4j.ExpressionBuilder
+import net.objecthunter.exp4j.function.Function
+import kotlin.math.*
 
-// Button labels
 val buttonList = listOf(
+    "sin", "cos", "tan", "√",
     "C", "(", ")", "/",
     "7", "8", "9", "*",
-    "4", "5", "6", "+",
-    "1", "2", "3", "-",
+    "4", "5", "6", "-",
+    "1", "2", "3", "+",
     "AC", "0", ".", "="
 )
 
@@ -29,8 +31,8 @@ val backgroundColor = Color(0xFF000000)     // Black
 val displayTextColor = Color(0xFFFFFFFF)     // White
 val numberKeyColor = Color(0xFF333333)       // Dark gray
 val operatorKeyColor = Color(0xFFFF9500)     // Orange
-val functionKeyColor = Color(0xFFAC0000)     // Light gray
-val equalKeyColor = Color(0xFFFF9500)        // Orange (same as operator)
+val functionKeyColor = Color(0xFFAA0000)     // Light gray
+val equalKeyColor = Color(0xFFFF9500)        // Orange
 
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
@@ -72,8 +74,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Push buttons down
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f)) // Push buttons to the bottom
 
             // Buttons grid
             Column(
@@ -94,8 +95,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                                     .background(
                                         when {
                                             label == "=" -> equalKeyColor
-                                            label in listOf("/", "*", "-", "+", "(", ")") -> operatorKeyColor
-                                            label in listOf("C", "AC") -> functionKeyColor
+                                            label in listOf("/", "*", "-", "+", "(", ")", "√") -> operatorKeyColor
+                                            label in listOf("C", "AC", "sin", "cos", "tan") -> functionKeyColor
                                             else -> numberKeyColor
                                         }
                                     )
@@ -112,7 +113,42 @@ fun Calculator(modifier: Modifier = Modifier) {
                                             }
                                             "=" -> {
                                                 try {
-                                                    val evaluated = ExpressionBuilder(input).build().evaluate()
+                                                    val expr = input
+                                                        .replace("√", "sqrt")
+                                                        .replace("%", "*0.01")
+
+                                                    val sqrtFunction = object : Function("sqrt", 1) {
+                                                        override fun apply(vararg args: Double): Double {
+                                                            return sqrt(args[0])
+                                                        }
+                                                    }
+
+                                                    val sinFunction = object : Function("sin", 1) {
+                                                        override fun apply(vararg args: Double): Double {
+                                                            return sin(Math.toRadians(args[0]))
+                                                        }
+                                                    }
+
+                                                    val cosFunction = object : Function("cos", 1) {
+                                                        override fun apply(vararg args: Double): Double {
+                                                            return cos(Math.toRadians(args[0]))
+                                                        }
+                                                    }
+
+                                                    val tanFunction = object : Function("tan", 1) {
+                                                        override fun apply(vararg args: Double): Double {
+                                                            return tan(Math.toRadians(args[0]))
+                                                        }
+                                                    }
+
+                                                    val evaluated = ExpressionBuilder(expr)
+                                                        .function(sqrtFunction)
+                                                        .function(sinFunction)
+                                                        .function(cosFunction)
+                                                        .function(tanFunction)
+                                                        .build()
+                                                        .evaluate()
+
                                                     result = evaluated.toString()
                                                 } catch (e: Exception) {
                                                     result = "Error"
