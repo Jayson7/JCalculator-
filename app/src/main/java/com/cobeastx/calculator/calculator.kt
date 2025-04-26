@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.objecthunter.exp4j.ExpressionBuilder
 
+// Button labels
 val buttonList = listOf(
     "C", "(", ")", "/",
     "7", "8", "9", "*",
@@ -23,13 +24,13 @@ val buttonList = listOf(
     "AC", "0", ".", "="
 )
 
-// Define your custom colors
-val backgroundColor = Color(0xFF000000)
-val displayTextColor = Color(0xFFFFFFFF)
-val numberKeyColor = Color(0xFF333333)
-val operatorKeyColor = Color(0xFFFF9500)
-val functionKeyColor = Color(0xFFA10101)
-val equalKeyColor = Color(0xFFFF9500)
+// Colors
+val backgroundColor = Color(0xFF000000)     // Black
+val displayTextColor = Color(0xFFFFFFFF)     // White
+val numberKeyColor = Color(0xFF333333)       // Dark gray
+val operatorKeyColor = Color(0xFFFF9500)     // Orange
+val functionKeyColor = Color(0xFFAC0000)     // Light gray
+val equalKeyColor = Color(0xFFFF9500)        // Orange (same as operator)
 
 @Composable
 fun Calculator(modifier: Modifier = Modifier) {
@@ -46,7 +47,7 @@ fun Calculator(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.End
         ) {
-            // Input text
+            // Display input
             Text(
                 text = input,
                 style = TextStyle(
@@ -59,7 +60,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Result text
+            // Display result
             Text(
                 text = result,
                 style = TextStyle(
@@ -71,7 +72,8 @@ fun Calculator(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            // Push buttons down
+            Spacer(modifier = Modifier.weight(1f))
 
             // Buttons grid
             Column(
